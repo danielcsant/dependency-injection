@@ -4,6 +4,8 @@ import readermonad.repository.mongodb.UserRepositoryImpl
 import readermonad.repository.{UserRepository, Users}
 import readermonad.service.UserInfo
 
+import scalaz.Reader
+
 /**
   * Created by dcarroza on 14/07/16.
   */
@@ -22,8 +24,10 @@ object Application extends Application(
 class Application(config: Config) extends Users {
 
   def printUser(id: Int): Unit = {
-    val foundUser = UserInfo.findUser("daniel")(config)
-    println(foundUser)
+    run(UserInfo.findUser("daniel"))
   }
 
+  private def run[A](reader: Reader[Config, A]): Unit = {
+    println(reader(config))
+  }
 }
